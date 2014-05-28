@@ -26,8 +26,7 @@ def spannogram(u, w, eps=0.1):
     for i in range(int(math.ceil(eps ** (-d)))):
         v = np.random.randn(d, 1)
 
-        interm = np.sqrt(np.diag(w)).dot(u.T)
-        x = v.T.dot(interm)
+        x = v.T.dot( np.sqrt(np.diag(w)).dot(u.T) )
         x /= np.linalg.norm(x)
 
         value = x.dot(u).dot(np.diag(w)).dot(u.T).dot(x.T)
@@ -72,12 +71,11 @@ def spca(a, s, k, d):
         xprime, value = spannogram(V[:, -d:], w[-d:])
 
         # 4
-        xprimesparse = xprime.copy()
         idx = np.abs(xprime).argsort(axis=0)
         for i in idx[:-s]:
-            xprimesparse[i] = 0
+            xprime[i] = 0
 
-        X[:, l] = xprimesparse[:, 0]
+        X[:, l] = xprime[:, 0]
 
         # 5
         for i in idx[-s:]:

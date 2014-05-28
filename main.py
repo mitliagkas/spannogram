@@ -14,7 +14,7 @@ __email__ = "ioannis@utexas.edu"
 __status__ = "alpha"
 
 
-p = 6
+p = 20
 n = 10000
 d = 3
 sigma = 0.01
@@ -37,9 +37,11 @@ if False:
     print
     print value
 else:
-    V = spca(X.dot(X.T), 3, 2, 2)
-
-print V.T
+    Vo = spcaold(X.dot(X.T), 2, 2, 2)
+    print Vo.T
+    print
+    V = spca(X.dot(X.T), 2, 2, 2)
+    print V.T
 
 
 

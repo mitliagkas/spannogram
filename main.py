@@ -1,11 +1,8 @@
 from numpy import random
 import numpy
-from scipy import linalg
 from spannogram import *
 
 __author__ = 'migish'
-
-print "Hello world"
 
 p = 10
 n = 10000
@@ -18,7 +15,6 @@ v /= numpy.linalg.norm(v)
 X = v.dot(random.randn(1, n)) + sigma*random.randn(p,n)
 
 if False:
-    #[w, V] = linalg.eigh((1.0/n)*X.dot(X.T))
     [w, V] = linalg.eigh(X.dot(X.T))
     idx = w.argsort()
     w = w[idx]
@@ -31,7 +27,7 @@ if False:
     print
     print value
 else:
-    V=SPCA(X.dot(X.T),3,2,2)
+    V=spca(X.dot(X.T),3,2,2)
 
 print V
 

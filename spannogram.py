@@ -1,22 +1,6 @@
 import math
 import numpy as np
 from numpy import linalg
-import scipy as sp
-
-# Pseudo code
-# [U, D] = eigs(A,d)
-#
-# for i = 1:O(eps^-d)
-#     v = randn(d,1)
-#     x_i = colinear unit norm vector sto n-dimensional vector v'*sqrt(D)*U
-#     metric_i = xi'*U*D*U'*xi
-# end
-#
-# rank_d_eps_optimal = max mextric vector
-#
-# gia deflation se kathe vima kanw zero forcing pou einai the cheapest choice
-# diladi otan vreis to kalytero x_i apo ta parapanw, pairneis ton arxiko sou pinaka,
-# tou skotwneis ta cols/rows indexed by x_i, kaneis svd ston neo "truncated" kai repeat the above steps
 
 
 def spannogram(u, w, eps=0.1):
@@ -35,10 +19,6 @@ def spannogram(u, w, eps=0.1):
 
     assert w.shape[0] == d
 
-    #     v = randn(d,1)
-    #     x_i = colinear unit norm vector sto n-dimensional vector v'*sqrt(D)*U
-    #     metric_i = xi'*U*D*U'*xi
-
     maximum = float("-inf")
 
     xprime = None
@@ -49,7 +29,6 @@ def spannogram(u, w, eps=0.1):
         interm = np.sqrt(np.diag(w)).dot(u.T)
         x = v.T.dot(interm)
         x /= np.linalg.norm(x)
-        #x = v.T.dot(np.sqrt(np.diag(w)).dot(u))
 
         value = x.dot(u).dot(np.diag(w)).dot(u.T).dot(x.T)
 
@@ -60,7 +39,7 @@ def spannogram(u, w, eps=0.1):
     return xprime.T, maximum
 
 
-def SPCA(a, s, k, d):
+def spca(a, s, k, d):
     """
     Runs the spannogram-based sparse PCA algorithm.
     Uses zero-forcing 'deflation' for multiple components.
@@ -69,49 +48,41 @@ def SPCA(a, s, k, d):
     :param s: An integer describing the desired sparsity.
     :param k: The number of components to be extracted.
     :param d: The number of components to use for the spectral approximation.
-    """
 
-    """
-        Current algo:
-        1. Approximate A using d-top eigenvectors
+    Current algorithm:
+        1. Approximate A using d-top eigen-vectors
         2. Run spannogram
         3. Get direction
         4. Keep k-strongest elements as component
         5. Zero-force corresponding rows/columns of A
-        6. Goto 1
+        6. Go to 1
     """
 
-    p=a.shape[0]
-    X=np.zeros((p,k))
+    p = a.shape[0]
+    X = np.zeros((p, k))
 
     for l in range(k):
-    # 1
+        # 1
         [w, V] = linalg.eigh(a)
         idx = w.argsort()
         w = w[idx]
-        V = V[:,idx]
+        V = V[:, idx]
 
-    # 2,3
-        xprime,value = spannogram(V[:,-d:],w[-d:])
+        # 2,3
+        xprime, value = spannogram(V[:, -d:], w[-d:])
 
-    # 4
-        xprimeSparse=xprime.copy()
-        #idx=np.abs(xprime.squeeze()).argsort()
-        idx=np.abs(xprime).argsort(axis=0)
+        # 4
+        xprimesparse = xprime.copy()
+        idx = np.abs(xprime).argsort(axis=0)
         for i in idx[:-s]:
-            xprimeSparse[i] = 0
+            xprimesparse[i] = 0
 
-        print xprimeSparse
+        X[:, l] = xprimesparse[:, 0]
 
-        print X[:,l].shape
-        print xprimeSparse[:,0].shape
-
-        X[:, l] = xprimeSparse[:,0]
-
-    # 5
+        # 5
         for i in idx[-s:]:
-            a[i,:]=0
-            a[:,i]=0
+            a[i, :] = 0
+            a[:, i] = 0
 
     return X
 

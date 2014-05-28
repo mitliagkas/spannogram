@@ -9,7 +9,7 @@ print "Hello world"
 
 p = 10
 n = 10000
-d = 2
+d = 3
 sigma = 0.01
 
 v = random.randn(p, 1)
@@ -26,7 +26,7 @@ V = V[:,idx]
 print w
 print w[-d:]
 
-[xprime, value] = spannogram(V[:, -d:], w[-d:], eps=0.1)
+[xprime, value] = spannogram(V[:, -d:], w[-d:], eps=0.3)
 
 print v.T.dot(V[:, -d:])
 print v.T.dot(xprime)

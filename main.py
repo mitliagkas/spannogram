@@ -1,8 +1,18 @@
+#!/usr/bin/env python
+"""The main execution file"""
+
 from numpy import random
 import numpy
 from spannogram import *
 
-__author__ = 'migish'
+__author__ = 'Ioannis Mitliagkas'
+__copyright__ = "Copyright 2014, Ioannis Mitliagkas"
+__credits__ = ["Dimitris Papailiopoulos"]
+__license__ = "MIT"
+__version__ = "0.0.1"
+__email__ = "ioannis@utexas.edu"
+__status__ = "alpha"
+
 
 p = 6
 n = 10000

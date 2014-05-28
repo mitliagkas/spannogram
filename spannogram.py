@@ -1,6 +1,16 @@
+#!/usr/bin/env python
+"""Contains the implementation of spannogram-based algorithms"""
 import math
 import numpy as np
 from numpy import linalg
+
+__author__ = 'Ioannis Mitliagkas'
+__copyright__ = "Copyright 2014, Ioannis Mitliagkas"
+__credits__ = ["Dimitris Papailiopoulos"]
+__license__ = "MIT"
+__version__ = "0.0.1"
+__email__ = "ioannis@utexas.edu"
+__status__ = "alpha"
 
 
 def spannogram(u, w, eps=0.1):

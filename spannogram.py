@@ -13,13 +13,14 @@ __email__ = "ioannis@utexas.edu"
 __status__ = "alpha"
 
 
-def spannogram(u, w, eps=0.1):
+def spannogram(u, w, s, eps=0.1):
     """
     Runs the spannogram algorithm on a rank-d matrix.
     Uses the \epsilon-net argument
 
     :param u: A p x d array-like structure containing d orthonormal columns.
     :param w: A d x 1 array-like structure containing d eigenvalues.
+    :param s: An integer describing the desired level of sparsity
     :param eps: Desired accuracy. Defaults to 0.1
     :rtype : object a p x 1 array-like structure, containing the optimal vector.
     """
@@ -61,10 +62,9 @@ def spca(a, s, k, d):
     Current algorithm:
         1. Approximate A using d-top eigen-vectors
         2. Run spannogram
-        3. Get direction
-        4. Keep k-strongest elements as component
-        5. Zero-force corresponding rows/columns of A
-        6. Go to 1
+        3. Keep k-strongest elements as component
+        4. Zero-force corresponding rows/columns of A
+        5. Go to 1
     """
 
     p = a.shape[0]
@@ -77,8 +77,8 @@ def spca(a, s, k, d):
         w = w[idx]
         V = V[:, idx]
 
-        # 2,3
-        xprime, value = spannogram(V[:, -d:], w[-d:])
+        # 2
+        xprime, value = spannogram(V[:, -d:], w[-d:], s)
 
         # 4
         idx = np.abs(xprime).argsort(axis=0)

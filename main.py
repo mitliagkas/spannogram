@@ -17,21 +17,23 @@ v /= numpy.linalg.norm(v)
 
 X = v.dot(random.randn(1, n)) + sigma*random.randn(p,n)
 
-#[w, V] = linalg.eigh((1.0/n)*X.dot(X.T))
-[w, V] = linalg.eigh(X.dot(X.T))
-idx = w.argsort()
-w = w[idx]
-V = V[:,idx]
+if False:
+    #[w, V] = linalg.eigh((1.0/n)*X.dot(X.T))
+    [w, V] = linalg.eigh(X.dot(X.T))
+    idx = w.argsort()
+    w = w[idx]
+    V = V[:,idx]
 
-print w
-print w[-d:]
+    [xprime, value] = spannogram(V[:, -d:], w[-d:], eps=0.3)
 
-[xprime, value] = spannogram(V[:, -d:], w[-d:], eps=0.3)
+    print v.T.dot(V[:, -d:])
+    print v.T.dot(xprime)
+    print
+    print value
+else:
+    V=SPCA(X.dot(X.T),3,2,2)
 
-print v.T.dot(V[:, -d:])
-print v.T.dot(xprime)
-print
-print value
+print V
 
 
 

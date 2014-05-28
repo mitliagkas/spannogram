@@ -1,5 +1,6 @@
 import math
 import numpy as np
+from numpy import linalg
 import scipy as sp
 
 # Pseudo code
@@ -42,8 +43,6 @@ def spannogram(u, w, eps=0.1):
 
     xprime = None
 
-    print "Checking", int(math.ceil(eps ** (-d))), "points"
-
     for i in range(int(math.ceil(eps ** (-d)))):
         v = np.random.randn(d, 1)
 
@@ -82,22 +81,39 @@ def SPCA(a, s, k, d):
         6. Goto 1
     """
 
+    p=a.shape[0]
+    X=np.zeros((p,k))
+
+    for l in range(k):
     # 1
-    [w, V] = linalg.eigh(a)
-    idx = w.argsort()
-    w = w[idx]
-    V = V[:,idx]
+        [w, V] = linalg.eigh(a)
+        idx = w.argsort()
+        w = w[idx]
+        V = V[:,idx]
 
     # 2,3
-    xprime,value = spannogram(V[:,-d:],w[-d:])
+        xprime,value = spannogram(V[:,-d:],w[-d:])
 
     # 4
-    xprimeSparse=xprime
-    for i in idx[:-2]:
-        xprimeSparse[i]=0
+        xprimeSparse=xprime.copy()
+        #idx=np.abs(xprime.squeeze()).argsort()
+        idx=np.abs(xprime).argsort(axis=0)
+        for i in idx[:-s]:
+            xprimeSparse[i] = 0
 
-    print xprime
-    print xprimeSparse
+        print xprimeSparse
+
+        print X[:,l].shape
+        print xprimeSparse[:,0].shape
+
+        X[:, l] = xprimeSparse[:,0]
+
+    # 5
+        for i in idx[-s:]:
+            a[i,:]=0
+            a[:,i]=0
+
+    return X
 
 
 

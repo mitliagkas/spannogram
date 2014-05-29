@@ -1,8 +1,7 @@
 #!/usr/bin/env python
-"""Contains the implementation of spannogram-based algorithms"""
-import math
+"""Contains the implementation of truncated power method"""
 import numpy as np
-from numpy import linalg
+from numpy import random
 
 __author__ = 'Ioannis Mitliagkas'
 __copyright__ = "Copyright 2014, Ioannis Mitliagkas"
@@ -34,6 +33,37 @@ def tpower(a, s, k):
 
     assert isinstance(a, np.ndarray)
 
+    p = a.shape[0]
+    X = np.zeros((p, k))
+
+    for ik in xrange(k):
+        x = random.randn(p, 1)
+        while True:
+            # Power step
+            x = a.dot(x)
+
+            # Truncate result
+            idx = np.abs(x).argsort(axis=0)
+            for l in idx[:-s]:
+                x[l] = 0
+
+            # Normalize
+            x /= np.linalg.norm(x)
+
+            # Check for termination
+            # TODO: Add condition
+            break
+
+        # Store component x
+        X[:, ik] = x[:, 0]
+
+        # Deflate a
+        idx = np.abs(x).argsort(axis=0)
+        for i in idx[-s:]:
+            a[i, :] = 0
+            a[:, i] = 0
+
+    return X
 
 
 

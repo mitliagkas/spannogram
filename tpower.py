@@ -1,7 +1,10 @@
 #!/usr/bin/env python
 """Contains the implementation of truncated power method"""
+import math
+
 import numpy as np
 from numpy import random
+
 
 __author__ = 'Ioannis Mitliagkas'
 __copyright__ = "Copyright 2014, Ioannis Mitliagkas"
@@ -38,6 +41,7 @@ def tpower(a, s, k):
 
     for ik in xrange(k):
         x = random.randn(p, 1)
+        iter=0
         while True:
             # Power step
             x = a.dot(x)
@@ -51,8 +55,10 @@ def tpower(a, s, k):
             x /= np.linalg.norm(x)
 
             # Check for termination
-            # TODO: Add condition
-            break
+            # TODO: Add convergence check
+            if iter>math.ceil(math.log(p)):
+                break
+            iter+=1
 
         # Store component x
         X[:, ik] = x[:, 0]
